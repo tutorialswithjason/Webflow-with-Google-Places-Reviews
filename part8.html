@@ -1,0 +1,59 @@
+<!-- Everything here goes in the "before </body>" code of your Webflow site page where you want to display reviews -->
+
+<!-- Find the right place ID for your business at https://developers.google.com/places/place-id -->
+<script>
+    var map = document.getElementById('google-places');
+    function initMap() {
+        var service = new google.maps.places.PlacesService(map);
+        service.getDetails({
+            placeId: 'XXXXXXXXXXXXXXXXXXXXXXXXXX'
+        }, function (places, status) {
+            if (status === google.maps.places.PlacesServiceStatus.OK) {
+                reviewsArray = [];
+                reviewsArray.push(places.reviews);
+                for (var key in reviewsArray) {
+                    var arr = reviewsArray[key];
+                    for (i = 0; i < arr.length; i++) {
+                        var review = arr[i];
+                        var author = review.author_name;
+                        var when = review.relative_time_description;
+                        var comment = review.text;
+
+                        var starNumber = review.rating;
+                        var starPercentage = `${(starNumber / 5) * 100}%`;
+                        console.log(starPercentage);
+
+
+                        var profilePic = review.profile_photo_url;
+                        // console.log(author + ', ' + when + ', ' + comment + ', ' + rating + ', ' + profilePic);
+                        document.getElementById('google-places').innerHTML +=
+                            `
+                            <div class="review">
+                                <div class="profile-pic-wrapper">
+                                    <img src="${profilePic}" alt="http://uploads.webflow.com/img/image-placeholder.svg" class="profile-pic">
+                                </div>
+                                <div class="review-content-wrapper">
+                                    <h3 class="review-author">${author}</h3>
+                                <div class="stars-wrapper">
+                                <div class="star-outer">
+                                    <h2 class="star-text">☆☆☆☆☆</h2>
+                                        <div class="star-inner" style="width: ${starPercentage};">
+                                            <h2 class="star-text">★★★★★</h2>
+                                        </div>
+                                </div>
+                                </div>
+                                div class="when-text">${when}</div>
+                                <div class="review-text">${comment}</div>
+                                </div>
+                            </div>
+                            `
+                    }
+                }
+            }
+        })
+    }
+</script>
+
+<!-- Replace XXX with your key that you created at https://console.cloud.google.com -->
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=XXXXXXXXXXXXXXXXXXXXXXXXXX&libraries=places&callback=initMap">
+</script>
